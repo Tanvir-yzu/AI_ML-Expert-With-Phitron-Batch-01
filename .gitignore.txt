@@ -1,0 +1,60 @@
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.pkl
+*.py.class
+
+# Virtual environment folders
+env/
+venv/
+ENV/
+.venv/
+.env/
+
+# Jupyter runtime files
+.jupyter/
+.ipython/
+
+# Hidden system files
+.DS_Store
+Thumbs.db
+
+# Log and temporary files
+*.log
+*.tmp
+*.swp
+*.bak
+
+# Notebook autosave or temp files
+*.nbconvert/
+*.nbgrader/
+*.nbtmp
+
+# VSCode and IDE settings
+.vscode/
+.idea/
+
+# Output data and large files (optional — keep if needed)
+data/
+outputs/
+*.csv
+*.h5
+*.json
+*.zip
+*.tar
+*.gz
+
+# Config or credentials (if any)
+config.json
+*.env
+
+# Optional: ignore generated plots or reports
+*.png
+*.jpg
+*.pdf
