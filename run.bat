@@ -96,8 +96,14 @@ echo.
 :: Get the current branch name
 for /f "delims=" %%B in ('git rev-parse --abbrev-ref HEAD') do set CURRENT_BRANCH=%%B
 
-:: Display the current branch name
-echo You are currently on branch: %CURRENT_BRANCH%
+:: Display the current branch name with design
+echo.
+echo ==============================================
+echo   Current Git Branch: 
+
+echo      [ %CURRENT_BRANCH% ]
+echo ==============================================
+echo.
 :: Determine branch to push
 set /p branch_input=%COLOR_YELLOW%%ICON_STEP% Enter the branch to push (blank = current or main): %COLOR_RESET%
 set "branch_name=%branch_input%"
