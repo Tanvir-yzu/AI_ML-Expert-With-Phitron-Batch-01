@@ -1,41 +1,91 @@
 @echo off
-REM GitHub repository management script with color
+setlocal EnableExtensions EnableDelayedExpansion
 
-:: Define ANSI color codes
-set "COLOR_RED=[31m"
-set "COLOR_GREEN=[32m"
-set "COLOR_YELLOW=[33m"
-set "COLOR_CYAN=[36m"
-set "COLOR_RESET=[0m"
-
-echo %COLOR_CYAN%===================================%COLOR_RESET%
-echo %COLOR_GREEN%Git Repository Management Script%COLOR_RESET%
-echo %COLOR_CYAN%===================================%COLOR_RESET%
+echo ===================================
+echo Simple Git Script
+echo ===================================
 echo.
 
-call git add .
+:: Ensure Git is available
+where git >nul 2>&1
+if errorlevel 1 (
+    echo Git is not installed or not available in PATH.
+    exit /b 1
+)
 
-set /p commit_text=%COLOR_YELLOW%Enter the git commit message: %COLOR_RESET%
+:: Ensure we are inside a Git repository (initialize if missing)
+git rev-parse --is-inside-work-tree >nul 2>&1
+if errorlevel 1 (
+    echo No Git repository detected. Initializing...
+    git init
+    if errorlevel 1 (
+        echo Failed to initialize git repository.
+        exit /b 1
+    )
+)
+
+:: Check for changes
+set "hasChanges="
+for /f "delims=" %%s in ('git status --porcelain') do set hasChanges=1
+
+if not defined hasChanges (
+    echo No changes detected. Skipping add/commit.
+    goto push_section
+)
+
+:: Stage all changes
+git add -A
+if errorlevel 1 (
+    echo git add failed.
+    exit /b 1
+)
+
+:: Prompt for commit message
+set /p commit_text=Enter the git commit message: 
+
+:: Sanitize: remove surrounding quotes and trim leading spaces
+set "commit_text=%commit_text:"=%"
+for /f "tokens=* delims= " %%A in ("%commit_text%") do set "commit_text=%%A"
+
+:: Decide final commit message
 if "%commit_text%"=="" (
-    call git commit -m "No commit message provided"
-    echo %COLOR_RED%No commit message provided, using default.%COLOR_RESET%
+    set "commit_msg=Auto commit"
 ) else (
-    call git commit -m "%commit_text%"
-    echo %COLOR_GREEN%Committed with message: %commit_text%%COLOR_RESET%
+    set "commit_msg=%commit_text%"
 )
-echo.
 
-set /p origin_name=%COLOR_YELLOW%Enter the git origin branch (default is main): %COLOR_RESET%
-if "%origin_name%"=="" (
-    call git push origin main
-    echo %COLOR_GREEN%Pushed to origin main%COLOR_RESET%
-) else (
-    call git push origin "%origin_name%"
-    echo %COLOR_GREEN%Pushed to origin %origin_name%%COLOR_RESET%
+:: Commit outside of IF to avoid parser issues
+git commit -m "%commit_msg%"
+if errorlevel 1 (
+    echo Commit failed.
+    exit /b 1
 )
-echo.
 
-echo %COLOR_CYAN%=====================================%COLOR_RESET%
-echo %COLOR_GREEN%Git push successful origin by "%origin_name%" %COLOR_RESET%
-echo %COLOR_CYAN%=====================================%COLOR_RESET%
+:push_section
+:: Determine branch to push
+set /p branch_input=Enter the branch to push (blank = current or main): 
+set "branch_name=%branch_input%"
+
+if "%branch_name%"=="" (
+    for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD 2^>nul') do set "branch_name=%%b"
+    if "%branch_name%"=="" set "branch_name=main"
+)
+
+:: Ensure remote 'origin' exists
+git remote get-url origin >nul 2>&1
+if errorlevel 1 (
+    echo Remote 'origin' is not configured.
+    echo Add it with: git remote add origin https://github.com/<your-username>/<your-repo>.git
+    exit /b 1
+)
+
+:: Push to origin
+git push origin "%branch_name%"
+if errorlevel 1 (
+    echo Push failed.
+    exit /b 1
+)
+
+echo Done.
+endlocal
 exit /b
