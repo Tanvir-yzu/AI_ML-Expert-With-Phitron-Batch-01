@@ -31,7 +31,7 @@ if errorlevel 1 (
     echo %COLOR_RED%%ICON_FAIL% Git is not installed or not available in PATH.%COLOR_RESET%
     endlocal & exit /b 1
 )
-echo %COLOR_GREEN%%ICON_OK% Git is available.%COLOR_RESET%
+echo %COLOR_GREEN%%ICON_OK%  Git is available.%COLOR_RESET%
 echo.
 
 :: Ensure we are inside a Git repository (initialize if missing)
