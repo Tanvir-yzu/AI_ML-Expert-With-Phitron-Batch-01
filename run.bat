@@ -35,18 +35,18 @@ echo %COLOR_GREEN%%ICON_OK%  Git is available.%COLOR_RESET%
 echo.
 
 :: Ensure we are inside a Git repository (initialize if missing)
-echo %COLOR_CYAN%%ICON_STEP% Checking repository...%COLOR_RESET%
+echo %COLOR_CYAN%%ICON_STEP%  Checking repository...%COLOR_RESET%
 git rev-parse --is-inside-work-tree >nul 2>&1
 if errorlevel 1 (
-    echo %COLOR_YELLOW%%ICON_WARN% No Git repository detected. Initializing...%COLOR_RESET%
+    echo %COLOR_YELLOW%%ICON_WARN%  No Git repository detected. Initializing...%COLOR_RESET%
     git init
     if errorlevel 1 (
-        echo %COLOR_RED%%ICON_FAIL% Failed to initialize git repository.%COLOR_RESET%
+        echo %COLOR_RED%%ICON_FAIL%  Failed to initialize git repository.%COLOR_RESET%
         endlocal & exit /b 1
     )
-    echo %COLOR_GREEN%%ICON_OK% Repository initialized.%COLOR_RESET%
+    echo %COLOR_GREEN%%ICON_OK%  Repository initialized.%COLOR_RESET%
 ) else (
-    echo %COLOR_GREEN%%ICON_OK% Repository OK.%COLOR_RESET%
+    echo %COLOR_GREEN%%ICON_OK%  Repository OK.%COLOR_RESET%
 )
 echo.
 
@@ -55,18 +55,18 @@ set "hasChanges="
 for /f "delims=" %%s in ('git status --porcelain') do set hasChanges=1
 
 if not defined hasChanges (
-    echo %COLOR_YELLOW%%ICON_WARN% No changes detected. Skipping add/commit.%COLOR_RESET%
+    echo %COLOR_YELLOW%%ICON_WARN%  No changes detected. Skipping add/commit.%COLOR_RESET%
     goto push_section
 )
 
-echo %COLOR_CYAN%%ICON_STEP% Staging changes...%COLOR_RESET%
+echo %COLOR_CYAN%%ICON_STEP%  Staging changes...%COLOR_RESET%
 :: Stage all changes
 git add -A
 if errorlevel 1 (
-    echo %COLOR_RED%%ICON_FAIL% git add failed.%COLOR_RESET%
+    echo %COLOR_RED%%ICON_FAIL%  git add failed.%COLOR_RESET%
     endlocal & exit /b 1
 )
-echo %COLOR_GREEN%%ICON_OK% Staged.%COLOR_RESET%
+echo %COLOR_GREEN%%ICON_OK%  Staged.%COLOR_RESET%
 echo.
 
 :: Prompt for commit message (sanitize quotes and trim)
