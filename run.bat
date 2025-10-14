@@ -20,7 +20,7 @@ set "SEP_LINE=──────────────────────
 
 :: Modern banner
 echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
-echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%Simple Git Script%COLOR_RESET%  %COLOR_CYAN%│%COLOR_RESET%
+echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%Simple Git Script%COLOR_RESET%                 %COLOR_CYAN%│%COLOR_RESET% 
 echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 echo.
 
