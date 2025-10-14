@@ -124,7 +124,7 @@ echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
 echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%✔     Completed%COLOR_RESET%                   %COLOR_CYAN%│%COLOR_RESET%
 echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 
-powershell -NoProfile -Command "(New-Object Media.SoundPlayer '%~dp0sounds\success.wav').PlaySync()" >nul 2>&1
+powershell -NoProfile -Command "[console]::Beep(880,200); [console]::Beep(988,200); [console]::Beep(1319,300)" >nul 2>&1
 
 endlocal
 exit /b
