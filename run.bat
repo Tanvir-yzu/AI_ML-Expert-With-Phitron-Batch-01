@@ -98,11 +98,10 @@ for /f "delims=" %%B in ('git rev-parse --abbrev-ref HEAD') do set CURRENT_BRANC
 
 :: Display the current branch name with design
 echo.
-echo ==============================================
-echo   Current Git Branch: 
-
-echo      [ %CURRENT_BRANCH% ]
-echo ==============================================
+echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
+echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%Current Git Branch:%COLOR_RESET%             %COLOR_CYAN%│%COLOR_RESET%
+echo %COLOR_CYAN%│%COLOR_RESET%      %COLOR_YELLOW%[ %CURRENT_BRANCH% ]%COLOR_RESET%              %COLOR_CYAN%│%COLOR_RESET%
+echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 echo.
 :: Determine branch to push
 set /p branch_input=%COLOR_YELLOW%%ICON_STEP% Enter the branch to push (blank = current or main): %COLOR_RESET%
