@@ -101,14 +101,14 @@ if "%branch_name%"=="" (
 )
 
 :: Ensure remote 'origin' exists
-echo %COLOR_CYAN%%ICON_STEP% Checking remote 'origin'...%COLOR_RESET%
+echo %COLOR_CYAN%%ICON_STEP%  Checking remote 'origin'...%COLOR_RESET%
 git remote get-url origin >nul 2>&1
 if errorlevel 1 (
     echo %COLOR_RED%%ICON_FAIL% Remote 'origin' is not configured.%COLOR_RESET%
     echo %COLOR_CYAN%Add it with: git remote add origin https://github.com/<your-username>/<your-repo>.git%COLOR_RESET%
     endlocal & exit /b 1
 )
-echo %COLOR_GREEN%%ICON_OK% Remote 'origin' detected.%COLOR_RESET%
+echo %COLOR_GREEN%%ICON_OK%  Remote 'origin' detected.%COLOR_RESET%
 echo.
 
 :: Push to origin
@@ -121,7 +121,7 @@ if errorlevel 1 (
 
 echo %COLOR_GREEN%%ICON_OK%  Done.%COLOR_RESET%
 echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
-echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%✔ Completed%COLOR_RESET%                       %COLOR_CYAN%│%COLOR_RESET%
+echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%✔     Completed%COLOR_RESET%                       %COLOR_CYAN%│%COLOR_RESET%
 echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 
 endlocal
