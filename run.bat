@@ -108,7 +108,7 @@ set /p branch_input=%COLOR_YELLOW%%ICON_STEP% Enter the branch to push (blank = 
 set "branch_name=%branch_input%"
 if "%branch_name%"=="" (
     for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD 2^>nul') do set "branch_name=%%b"
-    if "%branch_name%"=="" set "branch_name= %CURRENT_BRANCH% "
+    if "%branch_name%"=="" set "branch_name=%CURRENT_BRANCH%"
 )
 
 :: Ensure remote 'origin' exists
