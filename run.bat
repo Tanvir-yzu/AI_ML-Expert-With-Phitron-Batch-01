@@ -124,7 +124,7 @@ echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
 echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%✔     Completed%COLOR_RESET%                   %COLOR_CYAN%│%COLOR_RESET%
 echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 
-powershell -NoProfile -Command "[console]::Beep(880,200); [console]::Beep(988,200); [console]::Beep(1319,300)" >nul 2>&1
+powershell -NoProfile -Command "[console]::Beep(659,300); [console]::Beep(698,300); [console]::Beep(784,300); [console]::Beep(880,400); [console]::Beep(784,300); [console]::Beep(880,500)" >nul 2>&1
 
 endlocal
 exit /b
