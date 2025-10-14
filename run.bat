@@ -82,13 +82,13 @@ if "%commit_text%"=="" (
 )
 
 :: Commit outside of IF to avoid parser issues
-echo %COLOR_CYAN%%ICON_STEP% Committing...%COLOR_RESET%
+echo %COLOR_CYAN%%ICON_STEP%  Committing...%COLOR_RESET%
 git commit -m "%commit_msg%"
 if errorlevel 1 (
-    echo %COLOR_RED%%ICON_FAIL% Commit failed.%COLOR_RESET%
+    echo %COLOR_RED%%ICON_FAIL%  Commit failed.%COLOR_RESET%
     endlocal & exit /b 1
 )
-echo %COLOR_GREEN%%ICON_OK% Committed with message: %commit_msg%%COLOR_RESET%
+echo %COLOR_GREEN%%ICON_OK%  Committed with message: %commit_msg%%COLOR_RESET%
 echo.
 
 :push_section
@@ -119,7 +119,7 @@ if errorlevel 1 (
     endlocal & exit /b 1
 )
 
-echo %COLOR_GREEN%%ICON_OK% Done.%COLOR_RESET%
+echo %COLOR_GREEN%%ICON_OK%  Done.%COLOR_RESET%
 echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
 echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%✔ Completed%COLOR_RESET%                       %COLOR_CYAN%│%COLOR_RESET%
 echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
