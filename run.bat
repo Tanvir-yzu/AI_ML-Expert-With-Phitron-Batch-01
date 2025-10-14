@@ -104,7 +104,7 @@ echo %COLOR_CYAN%│%COLOR_RESET%      %COLOR_YELLOW%[ %CURRENT_BRANCH% ]%COLOR_
 echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 echo.
 :: Determine branch to push
-set /p branch_input=%COLOR_YELLOW%%ICON_STEP% Enter the branch to push (blank = current or main): %COLOR_RESET%
+set /p branch_input=%COLOR_YELLOW%%ICON_STEP% Enter the branch to push (default %CURRENT_BRANCH%): %COLOR_RESET%
 set "branch_name=%branch_input%"
 if "%branch_name%"=="" (
     for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD 2^>nul') do set "branch_name=%%b"
