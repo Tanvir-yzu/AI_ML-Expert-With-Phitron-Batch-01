@@ -121,7 +121,7 @@ if errorlevel 1 (
 
 echo %COLOR_GREEN%%ICON_OK%  Done.%COLOR_RESET%
 echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
-echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%✔     Completed%COLOR_RESET%                      %COLOR_CYAN%│%COLOR_RESET%
+echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%✔     Completed%COLOR_RESET%                   %COLOR_CYAN%│%COLOR_RESET%
 echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 
 endlocal
