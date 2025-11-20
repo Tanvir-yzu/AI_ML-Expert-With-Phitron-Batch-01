@@ -1,0 +1,3 @@
+@startuml
+skinparam componentStyle uml2
+@enduml
