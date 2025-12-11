@@ -1,25 +1,24 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-:: === Basic CMD Setup (No ANSI colors) ===
+:: === Clean CMD Setup ===
 chcp 65001 >nul
-title AI/ML Git Automation Script
+title AI ML Git Automation Script
 
-:: Simple text formatting (no color codes that show as text)
+:: Simple text formatting
 set "ICON_OK=OK"
 set "ICON_FAIL=FAIL"
 set "ICON_WARN=WARN"
 set "ICON_STEP=STEP"
-set "SEP_LINE=----------------------------------------"
+set "LINE=----------------------------------------"
 
 :: CONFIGURATION
 set "DEEPSEEK_API_KEY=sk-89562a5baec04f668588519e3a45b143"
 set "DEEPSEEK_API_URL=https://api.deepseek.com/v1/chat/completions"
 
-:: Banner (plain text)
-echo ┌%SEP_LINE%┐
-echo │  AI/ML Git Automation Script        │
-echo └%SEP_LINE%┘
+:: Banner (simple ASCII)
+echo STEP AI ML Git Automation Script
+echo STEP ========================================
 echo.
 
 :: Check Git
@@ -30,23 +29,23 @@ if errorlevel 1 (
     pause
     endlocal & exit /b 1
 )
-echo OK  Git is available.
+echo OK Git is available.
 echo.
 
 :: Check Git Repo
-echo STEP  Checking repository...
+echo STEP Checking repository...
 git rev-parse --is-inside-work-tree >nul 2>&1
 if errorlevel 1 (
-    echo WARN  No Git repo found. Initializing...
+    echo WARN No Git repo found. Initializing...
     git init
     if errorlevel 1 (
-        echo FAIL  Failed to initialize git repository.
+        echo FAIL Failed to initialize git repository.
         pause
         endlocal & exit /b 1
     )
-    echo OK  Repository initialized.
+    echo OK Repository initialized.
 ) else (
-    echo OK  Repository OK.
+    echo OK Repository OK.
 )
 echo.
 
@@ -55,23 +54,23 @@ set "hasChanges="
 for /f "delims=" %%s in ('git status --porcelain 2^>nul') do set "hasChanges=1"
 
 if not defined hasChanges (
-    echo WARN  No changes detected. Skipping add/commit.
-    goto push_section
+    echo WARN No changes detected. Skipping add/commit.
+    goto SKIP_COMMIT
 )
 
 :: Stage Changes
-echo STEP  Staging changes...
+echo STEP Staging changes...
 git add -A
 if errorlevel 1 (
-    echo FAIL  git add failed.
+    echo FAIL git add failed.
     pause
     endlocal & exit /b 1
 )
-echo OK  Staged.
+echo OK Staged.
 echo.
 
 :: Smart commit message generation
-echo STEP  Analyzing changes for commit message...
+echo STEP Analyzing changes for commit message...
 
 :: Get file statistics
 set "py_count=0"
@@ -120,104 +119,93 @@ echo   Text files: !txt_count!
 echo   Total changes: !total_changes!
 echo.
 
-echo OK  Generated smart commit message.
+echo OK Generated smart commit message.
 
 :: Show generated message and confirm
 echo.
 echo Suggested commit message:
 echo   !commit_msg!
 echo.
-set /p "choice=Use this message? (Y/n/custom): "
+set /p "choice=Use this message (Y/n/custom): "
 
-:: === FIXED: Better choice handling ===
-if /i "!choice!"=="n" (
+:: Handle choice
+if "!choice!"=="" set "choice=Y"
+if /i "!choice!"=="y" (
+    echo Using suggested message.
+) else if /i "!choice!"=="n" (
     set /p "commit_msg=Enter custom commit message: "
-    :: Clean the message
     set "commit_msg=!commit_msg:"=!"
     for /f "tokens=* delims= " %%A in ("!commit_msg!") do set "commit_msg=%%A"
     if "!commit_msg!"=="" set "commit_msg=Manual update"
-) else if /i not "!choice!"=="Y" (
-    :: User typed custom message directly OR pressed enter (empty)
-    if "!choice!"=="" (
-        set "commit_msg=!commit_msg!"
-    ) else (
-        set "commit_msg=!choice!"
-    )
+) else (
+    :: Custom message entered directly
+    set "commit_msg=!choice!"
     set "commit_msg=!commit_msg:"=!"
     for /f "tokens=* delims= " %%A in ("!commit_msg!") do set "commit_msg=%%A"
     if "!commit_msg!"=="" set "commit_msg=Manual update"
 )
-:: If choice was "Y" or empty, keep the original commit_msg
 
 :: Commit
 echo.
-echo STEP  Committing...
+echo STEP Committing...
 git commit -m "!commit_msg!"
 if errorlevel 1 (
-    echo FAIL  Commit failed.
+    echo FAIL Commit failed.
     pause
     endlocal & exit /b 1
 )
-echo OK  Committed: !commit_msg!
+echo OK Committed: !commit_msg!
 echo.
 
-:push_section
+:SKIP_COMMIT
 
 :: Get Current Branch
+set "CURRENT_BRANCH=main"
 for /f "delims=" %%B in ('git rev-parse --abbrev-ref HEAD 2^>nul') do set "CURRENT_BRANCH=%%B"
-if "!CURRENT_BRANCH!"=="" set "CURRENT_BRANCH=main"
 
 echo.
-echo ┌%SEP_LINE%┐
-echo │  Current Git Branch: !CURRENT_BRANCH!       │
-echo └%SEP_LINE%┘
+echo STEP Current Git Branch: !CURRENT_BRANCH!
+echo STEP ========================================
 echo.
 
-:: === FIXED: Better branch input handling ===
+:: Branch input handling
 set "branch_name=!CURRENT_BRANCH!"
 set /p "branch_input=Branch to push [!CURRENT_BRANCH!]: "
 
-:: Only change branch_name if user actually entered something
 if not "!branch_input!"=="" (
-    if not "!branch_input!"=="!CURRENT_BRANCH!"" (
-        set "branch_name=!branch_input!"
-    )
+    set "branch_name=!branch_input!"
 )
 
-:: Special case: if they just pressed enter, keep default
-if "!branch_input!"=="" (
-    set "branch_name=!CURRENT_BRANCH!"
-)
-
-echo STEP  Checking remote 'origin'...
+echo STEP Checking remote origin...
 git remote get-url origin >nul 2>&1
 if errorlevel 1 (
-    echo FAIL Remote 'origin' not configured.
+    echo FAIL Remote origin not configured.
     echo Add with: git remote add origin [your-repo-url]
     pause
     endlocal & exit /b 1
 )
-echo OK  Remote 'origin' detected.
+echo OK Remote origin detected.
 echo.
 
 :: Push
 echo STEP Pushing to origin/!branch_name!...
-echo (Pushing to branch: !branch_name!)
 git push origin "!branch_name!"
 if errorlevel 1 (
     echo FAIL Push failed.
-    echo You may need to:
-    echo   1. Pull first: git pull origin !branch_name!
-    echo   2. Check branch exists on remote
-    echo   3. Verify your GitHub permissions
+    echo.
+    echo Possible solutions:
+    echo 1. Check if branch exists on GitHub
+    echo 2. Try: git pull origin !branch_name! first
+    echo 3. Check your GitHub permissions
+    echo 4. Verify remote URL is correct
     pause
     endlocal & exit /b 1
 )
 
-echo OK  Successfully pushed!
-echo ┌%SEP_LINE%┐
-echo │  COMPLETED SUCCESSFULLY                │
-echo └%SEP_LINE%┘
+echo.
+echo OK Successfully completed!
+echo OK ========================================
+echo.
 
 pause
 endlocal
