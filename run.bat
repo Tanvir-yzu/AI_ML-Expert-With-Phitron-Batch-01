@@ -1,212 +1,142 @@
+
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-:: === Clean CMD Setup ===
+:: Enable UTF-8 for box-drawing UI
 chcp 65001 >nul
-title AI ML Git Automation Script
 
-:: Simple text formatting
-set "ICON_OK=OK"
-set "ICON_FAIL=FAIL"
-set "ICON_WARN=WARN"
-set "ICON_STEP=STEP"
-set "LINE=----------------------------------------"
+:: Color palette (works best in Windows Terminal)
+set "COLOR_RED=[31m"
+set "COLOR_GREEN=[32m"
+set "COLOR_YELLOW=[33m"
+set "COLOR_CYAN=[36m"
+set "COLOR_RESET=[0m"
 
-:: CONFIGURATION
-set "DEEPSEEK_API_KEY=sk-89562a5baec04f668588519e3a45b143"
-set "DEEPSEEK_API_URL=https://api.deepseek.com/v1/chat/completions"
+:: UI icons and separators
+set "ICON_OK=✔"
+set "ICON_FAIL=✖"
+set "ICON_WARN=⚠"
+set "ICON_STEP=»"
+set "SEP_LINE=────────────────────────────────────"
 
-:: Banner (simple ASCII)
-echo STEP AI ML Git Automation Script
-echo STEP ========================================
+:: Modern banner
+echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
+echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%Simple Git Script%COLOR_RESET%                 %COLOR_CYAN%│%COLOR_RESET% 
+echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 echo.
 
-:: Check Git
-echo STEP Checking Git availability...
+:: Ensure Git is available
+echo %COLOR_CYAN%%ICON_STEP% Checking Git availability...%COLOR_RESET%
 where git >nul 2>&1
 if errorlevel 1 (
-    echo FAIL Git is not installed or not in PATH.
-    pause
+    echo %COLOR_RED%%ICON_FAIL% Git is not installed or not available in PATH.%COLOR_RESET%
     endlocal & exit /b 1
 )
-echo OK Git is available.
+echo %COLOR_GREEN%%ICON_OK%  Git is available.%COLOR_RESET%
 echo.
 
-:: Check Git Repo
-echo STEP Checking repository...
+:: Ensure we are inside a Git repository (initialize if missing)
+echo %COLOR_CYAN%%ICON_STEP%  Checking repository...%COLOR_RESET%
 git rev-parse --is-inside-work-tree >nul 2>&1
 if errorlevel 1 (
-    echo WARN No Git repo found. Initializing...
+    echo %COLOR_YELLOW%%ICON_WARN%  No Git repository detected. Initializing...%COLOR_RESET%
     git init
     if errorlevel 1 (
-        echo FAIL Failed to initialize git repository.
-        pause
+        echo %COLOR_RED%%ICON_FAIL%  Failed to initialize git repository.%COLOR_RESET%
         endlocal & exit /b 1
     )
-    echo OK Repository initialized.
+    echo %COLOR_GREEN%%ICON_OK%  Repository initialized.%COLOR_RESET%
 ) else (
-    echo OK Repository OK.
+    echo %COLOR_GREEN%%ICON_OK%  Repository OK.%COLOR_RESET%
 )
 echo.
 
-:: Detect Changes
+:: Check for changes
 set "hasChanges="
-for /f "delims=" %%s in ('git status --porcelain 2^>nul') do set "hasChanges=1"
+for /f "delims=" %%s in ('git status --porcelain') do set hasChanges=1
 
 if not defined hasChanges (
-    echo WARN No changes detected. Skipping add/commit.
-    goto SKIP_COMMIT
+    echo %COLOR_YELLOW%%ICON_WARN%  No changes detected. Skipping add/commit.%COLOR_RESET%
+    goto push_section
 )
 
-:: Stage Changes
-echo STEP Staging changes...
+echo %COLOR_CYAN%%ICON_STEP%  Staging changes...%COLOR_RESET%
+:: Stage all changes
 git add -A
 if errorlevel 1 (
-    echo FAIL git add failed.
-    pause
+    echo %COLOR_RED%%ICON_FAIL%  git add failed.%COLOR_RESET%
     endlocal & exit /b 1
 )
-echo OK Staged.
+echo %COLOR_GREEN%%ICON_OK%  Staged.%COLOR_RESET%
 echo.
 
-:: Smart commit message generation
-echo STEP Analyzing changes for commit message...
+:: Prompt for commit message (sanitize quotes and trim)
+set /p commit_text=%COLOR_YELLOW%%ICON_STEP% Enter the git commit message: %COLOR_RESET%
+set "commit_text=%commit_text:"=%"
+for /f "tokens=* delims= " %%A in ("%commit_text%") do set "commit_text=%%A"
 
-:: Get file statistics
-set "py_count=0"
-set "md_count=0"
-set "txt_count=0"
-set "total_changes=0"
-
-for /f "delims=" %%f in ('git diff --cached --name-only') do (
-    set /a total_changes+=1
-    echo %%f | findstr /i "\.py$" >nul && set /a py_count+=1
-    echo %%f | findstr /i "\.md$" >nul && set /a md_count+=1
-    echo %%f | findstr /i "\.txt$" >nul && set /a txt_count+=1
-)
-
-:: Smart message selection
-set "commit_msg=Update project files"
-
-if !py_count! GTR 0 (
-    if !py_count! EQU 1 (
-        set "commit_msg=Update Python ML code"
-    ) else (
-        set "commit_msg=Update !py_count! Python ML files"
-    )
-) else if !md_count! GTR 0 (
-    if !md_count! EQU 1 (
-        set "commit_msg=Update documentation"
-    ) else (
-        set "commit_msg=Update !md_count! docs files"
-    )
-) else if !txt_count! GTR 0 (
-    set "commit_msg=Update text resources"
+:: Decide final commit message
+if "%commit_text%"=="" (
+    set "commit_msg=Auto commit"
 ) else (
-    set "commit_msg=Update !total_changes! files"
+    set "commit_msg=%commit_text%"
 )
 
-:: Add context for multiple changes
-if !total_changes! GTR 5 (
-    set "commit_msg=!commit_msg! (!total_changes! total)"
-)
-
-:: Show analysis results
-echo Files changed:
-echo   Python files: !py_count!
-echo   Documentation: !md_count!
-echo   Text files: !txt_count!
-echo   Total changes: !total_changes!
-echo.
-
-echo OK Generated smart commit message.
-
-:: Show generated message and confirm
-echo.
-echo Suggested commit message:
-echo   !commit_msg!
-echo.
-set /p "choice=Use this message (Y/n/custom): "
-
-:: Handle choice
-if "!choice!"=="" set "choice=Y"
-if /i "!choice!"=="y" (
-    echo Using suggested message.
-) else if /i "!choice!"=="n" (
-    set /p "commit_msg=Enter custom commit message: "
-    set "commit_msg=!commit_msg:"=!"
-    for /f "tokens=* delims= " %%A in ("!commit_msg!") do set "commit_msg=%%A"
-    if "!commit_msg!"=="" set "commit_msg=Manual update"
-) else (
-    :: Custom message entered directly
-    set "commit_msg=!choice!"
-    set "commit_msg=!commit_msg:"=!"
-    for /f "tokens=* delims= " %%A in ("!commit_msg!") do set "commit_msg=%%A"
-    if "!commit_msg!"=="" set "commit_msg=Manual update"
-)
-
-:: Commit
-echo.
-echo STEP Committing...
-git commit -m "!commit_msg!"
+:: Commit outside of IF to avoid parser issues
+echo %COLOR_CYAN%%ICON_STEP%  Committing...%COLOR_RESET%
+git commit -m "%commit_msg%"
 if errorlevel 1 (
-    echo FAIL Commit failed.
-    pause
+    echo %COLOR_RED%%ICON_FAIL%  Commit failed.%COLOR_RESET%
     endlocal & exit /b 1
 )
-echo OK Committed: !commit_msg!
+echo %COLOR_GREEN%%ICON_OK%  Committed with message: %commit_msg%%COLOR_RESET%
 echo.
 
-:SKIP_COMMIT
+:push_section
 
-:: Get Current Branch
-set "CURRENT_BRANCH=main"
-for /f "delims=" %%B in ('git rev-parse --abbrev-ref HEAD 2^>nul') do set "CURRENT_BRANCH=%%B"
+:: Get the current branch name
+for /f "delims=" %%B in ('git rev-parse --abbrev-ref HEAD') do set CURRENT_BRANCH=%%B
 
+:: Display the current branch name with design
 echo.
-echo STEP Current Git Branch: !CURRENT_BRANCH!
-echo STEP ========================================
+echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
+echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%Current Git Branch:%COLOR_RESET%             %COLOR_CYAN%│%COLOR_RESET%
+echo %COLOR_CYAN%│%COLOR_RESET%      %COLOR_YELLOW%[ %CURRENT_BRANCH% ]%COLOR_RESET%              %COLOR_CYAN%│%COLOR_RESET%
+echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 echo.
-
-:: Branch input handling
-set "branch_name=!CURRENT_BRANCH!"
-set /p "branch_input=Branch to push [!CURRENT_BRANCH!]: "
-
-if not "!branch_input!"=="" (
-    set "branch_name=!branch_input!"
+:: Determine branch to push
+set /p branch_input=%COLOR_YELLOW%%ICON_STEP% Enter the branch to push (Current Branch -  %CURRENT_BRANCH%): %COLOR_RESET%
+set "branch_name=%branch_input%"
+if "%branch_name%"=="" (
+    for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD 2^>nul') do set "branch_name=%%b"
+    if "%branch_name%"=="" set "branch_name=%CURRENT_BRANCH%"
 )
 
-echo STEP Checking remote origin...
+:: Ensure remote 'origin' exists
+echo %COLOR_CYAN%%ICON_STEP%  Checking remote 'origin'...%COLOR_RESET%
 git remote get-url origin >nul 2>&1
 if errorlevel 1 (
-    echo FAIL Remote origin not configured.
-    echo Add with: git remote add origin [your-repo-url]
-    pause
+    echo %COLOR_RED%%ICON_FAIL% Remote 'origin' is not configured.%COLOR_RESET%
+    echo %COLOR_CYAN%Add it with: git remote add origin https://github.com/<your-username>/<your-repo>.git%COLOR_RESET%
     endlocal & exit /b 1
 )
-echo OK Remote origin detected.
+echo %COLOR_GREEN%%ICON_OK%  Remote 'origin' detected.%COLOR_RESET%
 echo.
 
-:: Push
-echo STEP Pushing to origin/!branch_name!...
-git push origin "!branch_name!"
+:: Push to origin
+echo %COLOR_CYAN%%ICON_STEP% Pushing to origin/%branch_name%...%COLOR_RESET%
+git push origin "%branch_name%"
 if errorlevel 1 (
-    echo FAIL Push failed.
-    echo.
-    echo Possible solutions:
-    echo 1. Check if branch exists on GitHub
-    echo 2. Try: git pull origin !branch_name! first
-    echo 3. Check your GitHub permissions
-    echo 4. Verify remote URL is correct
-    pause
+    echo %COLOR_RED%%ICON_FAIL% Push failed.%COLOR_RESET%
     endlocal & exit /b 1
 )
 
-echo.
-echo OK Successfully completed!
-echo OK ========================================
-echo.
+echo %COLOR_GREEN%%ICON_OK%  Done.%COLOR_RESET%
+echo %COLOR_CYAN%┌%SEP_LINE%┐%COLOR_RESET%
+echo %COLOR_CYAN%│%COLOR_RESET%  %COLOR_GREEN%✔     Completed%COLOR_RESET%                   %COLOR_CYAN%│%COLOR_RESET%
+echo %COLOR_CYAN%└%SEP_LINE%┘%COLOR_RESET%
 
-pause
+powershell -NoProfile -Command "(New-Object Media.SoundPlayer '%~dp0sounds\success.wav').PlaySync()" >nul 2>&1
+
 endlocal
-exit /b 0
+exit /b
