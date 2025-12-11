@@ -1,6 +1,6 @@
 # 🤖 AI/ML Expert with Phitron Batch 01
 
-This repository contains educational materials, code examples, and projects developed during the AI/ML Expert course (Batch 01) offered by Phitron. It covers fundamental concepts from Python programming for machine learning to practical ML/DL implementations.
+This repository contains educational materials, code examples, and projects developed during the AI/ML Expert course (Batch 01) offered by Phitron. It covers fundamental concepts from Python programming for machine learning to practical ML/DL implementations.  ttfhdfhfgh
 
 ## 📁 Repository Structure
 
