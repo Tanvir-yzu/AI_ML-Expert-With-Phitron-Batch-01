@@ -43,7 +43,6 @@ Thumbs.db
 # Output data and large files (optional — keep if needed)
 data/
 outputs/
-*.csv
 *.h5
 *.json
 *.zip
