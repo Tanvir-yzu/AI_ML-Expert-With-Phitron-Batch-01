@@ -1,0 +1,11 @@
+﻿,Unnamed: 0.1,Unnamed: 0,brand,name,price,spec_rating,processor,CPU,Ram,Ram_type,ROM,ROM_type,GPU,display_size,resolution_width,resolution_height,OS,warranty
+0,0,0,HP,Victus 15-fb0157AX Gaming Laptop,49900,73,5th Gen AMD Ryzen 5 5600H,"Hexa Core, 12 Threads",8GB,DDR4,512GB,SSD,4GB AMD Radeon RX 6500M,15.6,1920,1080,Windows 11 OS,1
+1,1,1,HP,15s-fq5007TU Laptop,39900,60,12th Gen Intel Core i3 1215U,"Hexa Core (2P + 4E), 8 Threads",8GB,DDR4,512GB,SSD,Intel UHD Graphics,15.6,1920,1080,Windows 11 OS,1
+2,2,2,Acer,One 14 Z8-415 Laptop,26990,69.32352941176471,11th Gen Intel Core i3 1115G4,"Dual Core, 4 Threads",8GB,DDR4,512GB,SSD,Intel Iris Xe Graphics,14,1920,1080,Windows 11 OS,1
+3,3,3,Lenovo,Yoga Slim 6 14IAP8 82WU0095IN Laptop,59729,66,12th Gen Intel Core i5 1240P,"12 Cores (4P + 8E), 16 Threads",16GB,LPDDR5,512GB,SSD,Intel Integrated Iris Xe,14,2240,1400,Windows 11 OS,1
+4,4,4,Apple,MacBook Air 2020 MGND3HN Laptop,69990,69.32352941176471,Apple M1,Octa Core (4P + 4E),8GB,DDR4,256GB,SSD,Apple M1 Integrated Graphics,13.3,2560,1600,Mac OS,1
+5,5,5,Acer,Extensa EX214-53 Laptop,39990,62,12th Gen Intel Core i5 1240P,"12 Cores (4P + 8E), 16 Threads",8GB,DDR4,512GB,SSD,Intel Iris Xe Graphics,14,1920,1080,Windows 11 OS,1
+6,6,6,Dell,Inspiron 3520 D560896WIN9B Laptop,36790,60,12th Gen Intel Core i3 1215U,"Hexa Core (2P + 4E), 8 Threads",8GB,DDR4,512GB,SSD,Intel UHD Graphics,15.6,1920,1080,Windows 11 OS,1
+7,7,7,Acer,Nitro V ANV15-51 2023 Gaming Laptop,76990,63,13th Gen Intel Core i5 13420H,"Octa Core (4P + 4E), 12 Threads",16GB,DDR5,512GB,SSD,6GB NVIDIA GeForce RTX 4050,15.6,1920,1080,Windows 11 OS,1
+8,8,8,Asus,Vivobook 15 X1502ZA-EJ523WS Laptop,48990,64,12th Gen Intel Core i5 12500H,"12 Cores (4P + 8E), 16 Threads",8GB,DDR4,512GB,SSD,Intel Iris Xe,15.6,1920,1080,Windows 11 OS,1
+9,9,9,Samsung,Galaxy Book2 Pro 13 Laptop,74990,68,12th Gen Intel Core i5 1240P,"12 Cores (4P + 8E), 16 Threads",16GB,LPDDR5,512GB,SSD,Intel Iris Xe Graphics,13.3,1080,1920,Windows 11 OS,1
