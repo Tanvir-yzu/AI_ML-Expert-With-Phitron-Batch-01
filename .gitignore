@@ -56,4 +56,3 @@ config.json
 # Optional: ignore generated plots or reports
 *.png
 *.jpg
-*.pdf
